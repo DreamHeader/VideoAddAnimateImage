@@ -96,10 +96,10 @@
   //  }
 
   NSString* localVideoUrl =
-      [[NSBundle mainBundle] pathForResource:@"allVideo" ofType:@"mp4"];
+      [[NSBundle mainBundle] pathForResource:@"BgVideo_wbb" ofType:@"mp4"];
   // 裁剪视频
   AVAsset* playAsset =
-      [self cutVideoWithPath:localVideoUrl startTime:0 endTime:15];
+      [self cutVideoWithPath:localVideoUrl startTime:0 endTime:24.4];
   //
   //    AVAsset* playAsset =
   //         [AVURLAsset assetWithURL:[NSURL fileURLWithPath:localVideoUrl]];
