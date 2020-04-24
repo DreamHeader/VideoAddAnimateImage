@@ -21,7 +21,7 @@
 #define Scale_Animate @"transform.scale"
 #define Position_Animate @"position"
 
-@interface AddAnimationViewController ()<CAAnimationDelegate>
+@interface AddAnimationViewController () <CAAnimationDelegate>
 
 @end
 
@@ -200,23 +200,21 @@
     playTime += 2.18;
     [parentLayer addSublayer:imageLayer];
   }
-  playTime += 0.01;
   for (int i = 0; i < 9; i++) {
     UIImage* origionalImage = origionalImages[i];
     if (!origionalImage) {
       continue;
     }
+    CGRect imageLayerFrame =
+        [self caculateImageRatioSize:origionalImage videoSize:size];
     UIImage* blureImage = [self createBlurImage:origionalImage];
     CALayer* blureLayer = [CALayer layer];
     [blureLayer setContents:(id)[blureImage CGImage]];
-    blureLayer.frame =
-        CGRectMake(-(size.width * 0.2) / 2, -(size.height * 0.2) / 2,
-                   size.width * 1.2, size.height * 1.2);
+    blureLayer.frame = imageLayerFrame;
+    [blureLayer setAffineTransform:CGAffineTransformMakeScale(2.0, 2.0)];
     blureLayer.opacity = 0.0;
     CALayer* imageLayer = [CALayer layer];
     [imageLayer setContents:(id)[origionalImage CGImage]];
-    CGRect imageLayerFrame =
-        [self caculateImageRatioSize:origionalImage videoSize:size];
     imageLayer.frame = imageLayerFrame;
     imageLayer.opacity = 0.0;
     // 出现动画
@@ -231,68 +229,71 @@
         CABasicAnimation* animation1 =
             [self setUpAnimateFromValue:@(-M_PI_4)
                                 toValue:@(0)
-                               duration:1
+                               duration:0.85
                              animateKey:RotationZ_Animate
                               beginTime:playTime];
         [imageLayer addAnimation:animation1 forKey:@"RotationZ_Animate"];
-        playTime += 1.5;
+        playTime += 1.02;
         [parentLayer addSublayer:blureLayer];
       } break;
       case 1: {
         [imageLayer setAffineTransform:CGAffineTransformMakeTranslation(
                                            imageLayer.frame.size.width / 2, 0)];
-        playTime += 0.1;
+
         CABasicAnimation* animation1 =
             [self setUpAnimateFromValue:@(imageLayer.frame.size.width / 2)
                                 toValue:@(0)
-                               duration:0.5
+                               duration:0.83
                              animateKey:TranslationX_Animate
                               beginTime:playTime];
         [imageLayer addAnimation:animation1 forKey:@"TranslationX_Animate"];
         [parentLayer addSublayer:blureLayer];
-        playTime += 1.5;
+        playTime += 1.87;
       } break;
       case 2: {
         int animateIndex = 0;
+        NSArray* fisrtArr = @[ @(0.94), @(0.03) ];
+        NSArray* secondArr = @[ @(0.96), @(0.08) ];
         for (int i = 1; i < 3; i++) {
+          NSArray* durationArr = (i == 1) ? fisrtArr : secondArr;
           animateIndex++;
           CABasicAnimation* animation1 =
               [self setUpAnimateFromValue:@(1)
                                   toValue:@(0.3)
-                                 duration:0.25
+                                 duration:[durationArr[0] doubleValue]
                                animateKey:Opacity_Animate
                                 beginTime:playTime];
           [imageLayer
               addAnimation:animation1
                     forKey:[NSString stringWithFormat:@"Opacity_Animate%d",
                                                       animateIndex]];
-          playTime += 0.25;
+          playTime += [durationArr[0] doubleValue];
           animateIndex++;
           CABasicAnimation* animation2 =
               [self setUpAnimateFromValue:@(0.3)
                                   toValue:@(1.0)
-                                 duration:0.25
+                                 duration:[durationArr[1] doubleValue]
                                animateKey:Opacity_Animate
                                 beginTime:playTime];
           [imageLayer
               addAnimation:animation2
                     forKey:[NSString stringWithFormat:@"Opacity_Animate%d",
                                                       animateIndex]];
-          playTime += 0.25;
+          playTime += [durationArr[1] doubleValue];
           [parentLayer addSublayer:blureLayer];
         }
       }
-
-      break;
+        playTime += 0.05;
+        break;
       case 3: {
         [imageLayer setAffineTransform:CGAffineTransformMakeScale(0.7, 0.7)];
         CABasicAnimation* animation1 = [self setUpAnimateFromValue:@(0.7)
                                                            toValue:@(1.0)
-                                                          duration:1
+                                                          duration:0.98
                                                         animateKey:Scale_Animate
                                                          beginTime:playTime];
         [imageLayer addAnimation:animation1 forKey:@"Scale_Animate"];
-        playTime += 1.0;
+        playTime += 1.04;
         [parentLayer addSublayer:blureLayer];
       }
 
@@ -309,18 +310,18 @@
                                                            size.height -
                                                                imageLayerFrame
                                                                    .origin.y)]
-                         duration:0.5
+                         duration:0.85
                        animateKey:Position_Animate
                         beginTime:playTime];
         [imageLayer addAnimation:animation1 forKey:@"Position_Animate"];
-        playTime += 1.5;
+        playTime += 0.99;
         CABasicAnimation* animation2 = [self setUpAnimateFromValue:@(1.0)
                                                            toValue:@(6.0)
-                                                          duration:0.5
+                                                          duration:0.87
                                                         animateKey:Scale_Animate
                                                          beginTime:playTime];
         [imageLayer addAnimation:animation2 forKey:@"Scale_Animate"];
-        playTime += 0.5;
+        playTime += 0.87;
 
         [parentLayer addSublayer:blureLayer];
       }
@@ -330,45 +331,46 @@
         [imageLayer setAffineTransform:CGAffineTransformMakeScale(6.0, 6.0)];
         CABasicAnimation* animation1 = [self setUpAnimateFromValue:@(6.0)
                                                            toValue:@(1.0)
-                                                          duration:1
+                                                          duration:0.13
                                                         animateKey:Scale_Animate
                                                          beginTime:playTime];
         [imageLayer addAnimation:animation1 forKey:@"Scale_Animate1"];
-        playTime += 1.5;
+        playTime += 0.13;
+        playTime += 0.84;
         CABasicAnimation* animation2 = [self setUpAnimateFromValue:@(1.0)
                                                            toValue:@(6.0)
-                                                          duration:0.5
+                                                          duration:0.12
                                                         animateKey:Scale_Animate
                                                          beginTime:playTime];
         [imageLayer addAnimation:animation2 forKey:@"Scale_Animate2"];
-        playTime += 0.5;
+        playTime += 0.12;
         [parentLayer addSublayer:blureLayer];
       } break;
       case 6: {
         [imageLayer setAffineTransform:CGAffineTransformMakeScale(6.0, 6.0)];
         CABasicAnimation* animation1 = [self setUpAnimateFromValue:@(6.0)
                                                            toValue:@(1.0)
-                                                          duration:1
+                                                          duration:0.88
                                                         animateKey:Scale_Animate
                                                          beginTime:playTime];
         [imageLayer addAnimation:animation1 forKey:@"Scale_Animate1"];
-        playTime += 2;
+        playTime += 3.04;
         [parentLayer addSublayer:blureLayer];
       }
 
       break;
       case 7: {
-        playTime += 3;
+        playTime += 3.97;
         [parentLayer addSublayer:blureLayer];
       }
 
       break;
       case 8: {
-        playTime += 1;
+        playTime += 2.03;
         [parentLayer addSublayer:blureLayer];
       }
       case 9: {
-        playTime += 3;
+        playTime += 4.83;
       } break;
       default:
         break;
@@ -381,19 +383,19 @@
 
     [parentLayer addSublayer:imageLayer];
   }
-//  // 生成弹幕
-//  for (int i = 1; i < 6; i++) {
-//    UIImage* image =
-//        [UIImage imageNamed:[NSString stringWithFormat:@"danmu%d.png", i]];
-//    CALayer* danmuLayer =
-//        [self getDanMuLayerAboutContent:image videoSize:size danmuIndex:i];
-//    [parentLayer addSublayer:danmuLayer];
-//  }
+  //  // 生成弹幕
+  //  for (int i = 1; i < 6; i++) {
+  //    UIImage* image =
+  //        [UIImage imageNamed:[NSString stringWithFormat:@"danmu%d.png", i]];
+  //    CALayer* danmuLayer =
+  //        [self getDanMuLayerAboutContent:image videoSize:size danmuIndex:i];
+  //    [parentLayer addSublayer:danmuLayer];
+  //  }
   // 生成特效
   // 纸鹤
   NSArray* texiaoNameArray = @[
-    @"zhiHe_", @"HuaBan_", @"love_", @"star_", @"notes_", @"Hudie_",
-    @"caihong_"
+    @"zhiHe_", @"HuaBan_", @"love_", @"star_", @"notes_", /* @"HuDie_",
+    @"caihong_"*/
   ];
   NSArray* texiaoStartTimeArr =
       @[ @(2.19), @(5.05), @(6.18), @(2.19), @(7.22), @(12.08), @(19.21) ];
@@ -419,9 +421,7 @@
         frame = CGRectMake(0, 0, size.width, size.height);
         break;
       case 2:
-        frame = CGRectMake((size.width - firstImage.size.width) / 2,
-                           size.height / 2 + firstImage.size.height / 2,
-                           firstImage.size.width, firstImage.size.height);
+        frame = CGRectMake(0, 0, size.width, size.height);
         break;
       case 3:
         frame = CGRectMake(0, 0, size.width, size.height);
@@ -430,7 +430,8 @@
         frame = CGRectMake(0, 0, size.width, size.height);
         break;
       case 5:
-        frame = CGRectMake(0, 0, size.width, size.height);
+        frame = CGRectMake(0, firstImage.size.height, size.width,
+                           firstImage.size.height);
         break;
       case 6:
         frame = CGRectMake((size.width - firstImage.size.width) / 2,
@@ -454,9 +455,11 @@
 - (NSArray*)createVideoTeXiaoArrayWithName:(NSString*)name count:(int)count {
   NSMutableArray* mutArray = [[NSMutableArray alloc] init];
   for (int i = 1; i < count + 1; i++) {
-    NSString* imageName =
-        [NSString stringWithFormat:@"%@%@@2x.png", name, @(i)];
-    UIImage* origionalImage = [UIImage imageNamed:imageName];
+    NSString* imageName = [NSString stringWithFormat:@"%@%@@2x", name, @(i)];
+    //    UIImage* origionalImage = [UIImage imageNamed:imageName];
+    NSString* filePath =
+        [[NSBundle mainBundle] pathForResource:imageName ofType:@"png"];
+    UIImage* origionalImage = [UIImage imageWithContentsOfFile:filePath];
     if (origionalImage) {
       [mutArray addObject:origionalImage];
     } else {
@@ -523,7 +526,6 @@
   gifAnimation.duration = totalTime;
   gifAnimation.beginTime = startPlatTime;
   gifAnimation.repeatCount = 100;
-  gifAnimation.delegate = self;
   gifAnimation.removedOnCompletion = YES;
   gifAnimation.fillMode = kCAFillModeForwards;
   gifAnimation.calculationMode = kCAAnimationDiscrete;
@@ -532,13 +534,9 @@
 
   CABasicAnimation* hideAnimation =
       [self setUpOpacityAnimateFromValue:1.0 toValue:0.0 duration:0];
-  hideAnimation.removedOnCompletion = YES;
   hideAnimation.beginTime = startPlatTime + duration;
   [imageLayer1 addAnimation:hideAnimation forKey:@"opacityHide"];
   return imageLayer1;
-}
-- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag{
-   
 }
 - (CALayer*)setUpGifImageLayerWithFilePath:(NSString*)filePath
                                  videoSize:(CGRect)videoSize
@@ -592,7 +590,7 @@
     gifAnimation.calculationMode = kCAAnimationDiscrete;
     [imageLayer addAnimation:gifAnimation forKey:@"gif"];
     playTime += durationTime;
-     
+
     CABasicAnimation* animation =
         [CABasicAnimation animationWithKeyPath:@"opacity"];
     animation.fromValue = @(1.0);
@@ -600,7 +598,7 @@
     animation.duration = 0;
     animation.repeatCount = 1;
     animation.beginTime = playTime;
-    animation.removedOnCompletion = YES;
+    animation.removedOnCompletion = NO;
     animation.fillMode = kCAFillModeForwards;
     [imageLayer addAnimation:animation forKey:@"gifRemove"];
   }
