@@ -14,8 +14,7 @@
 
 @implementation CommonVideoViewController
 - (void)viewDidLoad {
-  [super viewDidLoad];
-
+  [super viewDidLoad]; 
 }
 - (id)initWithNibName:(NSString*)nibNameOrNil bundle:(NSBundle*)nibBundleOrNil {
   self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -96,13 +95,14 @@
   //  }
 
   NSString* localVideoUrl =
-      [[NSBundle mainBundle] pathForResource:@"BgVideo_wbb" ofType:@"mp4"];
+      [[NSBundle mainBundle] pathForResource:@"文字快闪白底音乐" ofType:@"mp4"];
   // 裁剪视频
-  AVAsset* playAsset =
-      [self cutVideoWithPath:localVideoUrl startTime:0 endTime:24.4];
+//  AVAsset* playAsset =
+//      [self cutVideoWithPath:localVideoUrl startTime:0 endTime:24.4];
   //
-  //    AVAsset* playAsset =
-  //         [AVURLAsset assetWithURL:[NSURL fileURLWithPath:localVideoUrl]];
+      AVAsset* playAsset =
+  
+           [AVURLAsset assetWithURL:[NSURL fileURLWithPath:localVideoUrl]];
   // 2 - Create AVMutableComposition object. This object will hold your AVMutableCompositionTrack instances.
   AVMutableComposition* mixComposition = [[AVMutableComposition alloc] init];
 
