@@ -95,7 +95,7 @@
   //  }
 
   NSString* localVideoUrl =
-      [[NSBundle mainBundle] pathForResource:@"文字快闪白底音乐" ofType:@"mp4"];
+      [[NSBundle mainBundle] pathForResource:@"spring_bg" ofType:@"mp4"];
   // 裁剪视频
 //  AVAsset* playAsset =
 //      [self cutVideoWithPath:localVideoUrl startTime:0 endTime:24.4];
